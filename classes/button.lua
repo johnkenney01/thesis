@@ -17,7 +17,7 @@ function Button.new(self, text, action ,windowWDivide, windowHDivide , w, h, fon
     self.h = self.font:getHeight(self.text)
     self.round = 10
     self.x = self.topx - self.w/2
-    self.y = self.topy - self.h/2
+    self.y = self.topy - 10
     self.color = {0.73, 0.32, 0.32}
     self.action = action or nil
     
@@ -38,7 +38,7 @@ function Button.update(self, dt, functionToCall)
     self.topx = WINDOW_WIDTH/self.windowWDivide or 0
     self.topy = WINDOW_HEIGHT/self.windowHDivide or 0
     self.x = self.topx - self.w/2
-    self.y = self.topy - self.h/2
+    self.y = self.topy - 10
     
 end 
 

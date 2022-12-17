@@ -22,7 +22,7 @@ function Header.draw(self)
         self.w = self.font:getWidth(self.text)
         self.h = self.font:getHeight(self.text)
         love.graphics.setColor(0.2,0.7,1,0.75)
-        love.graphics.rectangle('fill',self.x + self.offset,self.y,self.w,self.h, 40)
+        love.graphics.rectangle('fill',self.x ,self.y,self.w,self.h, 40)
     end 
     love.graphics.setColor(self.color)
     love.graphics.printf(self.text, self.x,self.y,WINDOW_WIDTH/self.windowWDivide,'center')

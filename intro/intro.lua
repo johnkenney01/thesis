@@ -6,11 +6,11 @@ header1 = "Forge On"
 titleColor = {1,1,0.3,1}
 
 function intro.load()
-    titleHeader = Header(header1,WINDOW_HEIGHT/50, WINDOW_HEIGHT/2,1,1, 400,titleColor, true )
-    startButton = Button('Start Game', "start", 2, 1.5, 300, 50,50)
-    loadButton = Button('Load Game', 'load', 2, 1.4, 200, 50,50)
-    optionsButton = Button('Options', "options", 2, 1.3, 300, 50,50)
-    quitButton = Button('Quit', "quit", 2, 1.22, 300, 50,50)
+    titleHeader = Header(header1,WINDOW_WIDTH/50, WINDOW_HEIGHT/3,1,1, WINDOW_WIDTH*.30,titleColor, true )
+    startButton = Button('Start Game', "start", 2, 1.5, 300, 50,WINDOW_WIDTH*.045)
+    loadButton = Button('Load Game', 'load', 2, 1.3, 200, 50,WINDOW_WIDTH*.045)
+    optionsButton = Button('Options', "options", 2, 1.1, 300, 50,WINDOW_WIDTH*.045)
+    quitButton = Button('Quit', "quit", 2, 1.22, 300, 50,WINDOW_WIDTH*.045)
     backgroundMainMenu = createBackGroundImage('assets/intro.jpg')
 end 
 

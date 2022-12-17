@@ -4,7 +4,7 @@ local tutorial = {}
 
 
 function tutorial.load()
-    player1 = Player(300,200)
+    player1 = Player(400,300)
 end 
 
 function tutorial.draw()
