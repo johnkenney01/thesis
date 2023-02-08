@@ -1,21 +1,26 @@
 require('miscellaneous/helpers')
+
 Object = require('classes/classic')
 local tutorial = {}
+tutorial.font = love.graphics.newFont("assets/fonts/heycomic.ttf", 18)
 
 
 function tutorial.load()
+    tmp = {}
     player1 = Player(400,300)
+
+    table.insert(tmp, player1)
+    tutorialLevel = Level(tmp)
 end 
 
 function tutorial.draw()
-    player1.draw(player1)
-    font = love.graphics.newFont(18)
-    love.graphics.setFont(font)
+    tutorialLevel.draw(tutorialLevel)
+    love.graphics.setFont(tutorial.font)
 end 
 
 
 function tutorial.update(dt)
-    player1.update(player1, dt)
+    tutorialLevel.update(tutorialLevel, dt)
 end 
 
 return tutorial

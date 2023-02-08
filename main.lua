@@ -5,7 +5,7 @@
 --This gets all the required Modules In the entire program
 require('miscellaneous/requireAll')
 getAllRequirements()
--- love._openConsole()
+love._openConsole()
 
 gameState = 1
 --------------------
@@ -24,7 +24,6 @@ end -- end of love.load()
 -----------------------------------------
 function love.draw()
     allGameStates[gameState].draw()
-    print(gameState)
 end -- end of love.draw()
 -----------------------------------------
 

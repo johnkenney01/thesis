@@ -7,6 +7,7 @@
 
 function getAllRequirements()
     require('graphics/graphics')
+    require('classes/levels')
     require('intro/intro')
     require('intro/optionsScreen/options')
     require('levels/tutorial')
@@ -17,6 +18,7 @@ function getAllRequirements()
     require('classes/button')
     require('classes/headers')
     require('classes/player')
+    
     
 end 
 

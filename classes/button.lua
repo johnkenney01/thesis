@@ -3,14 +3,17 @@ Object = require('classes/classic')
 
 Button = Object:extend()
 
-function Button.new(self, text, action ,windowWDivide, windowHDivide , w, h, fontSize)
+function Button.new(self, text, action ,windowWDivide, windowHDivide ,fontSizePercentage, functionToCall, table)
     -- x and y on rectangles are top left, we will reassign to center down below.
     self.windowWDivide = windowWDivide -- Where along the x axis you want the text
     self.windowHDivide = windowHDivide -- Where along the y axis you want the text
-    self.topx = WINDOW_WIDTH/windowWDivide or 0
-    self.topy = WINDOW_HEIGHT/windowHDivide or 0
+    self.topx = WINDOW_WIDTH/windowWDivide or love.event.quit()
+    self.topy = WINDOW_HEIGHT/windowHDivide or love.event.quit()
     self.text = text or "button"
-    self.font = love.graphics.newFont('assets/fonts/heycomic.ttf', fontSize)
+    self.fontSizePercentage = fontSizePercentage
+    self.fontSize = (WINDOW_WIDTH * self.fontSizePercentage)
+    
+    self.font = love.graphics.newFont("assets/fonts/heycomic.ttf", self.fontSize)
 
     self.fontOffset = 20
     self.w = self.font:getWidth(self.text) + self.fontOffset
@@ -20,11 +23,14 @@ function Button.new(self, text, action ,windowWDivide, windowHDivide , w, h, fon
     self.y = self.topy - 10
     self.color = {0.73, 0.32, 0.32}
     self.action = action or nil
+    self.functionToCall = functionToCall
+    self.tableToAddTo = table
+    self.addToLevelTable(self)
     
 end 
 
 function Button.draw(self)
-    love.graphics.setFont(self.font)
+    love.graphics.setFont(self.font, self.fontSize)
     setColor(self.color)
     self.makeButtonRectangle(self)
     setColor(1,1,1,1)
@@ -32,9 +38,10 @@ function Button.draw(self)
 
 end 
 
-function Button.update(self, dt, functionToCall)
+function Button.update(self, dt)
     -- If we change to full screen or out we need to update the x and y
-    Button.checkIfHover(self, functionToCall)
+    Button.checkIfHover(self)
+    self.ConfigDimensions(self)
     self.topx = WINDOW_WIDTH/self.windowWDivide or 0
     self.topy = WINDOW_HEIGHT/self.windowHDivide or 0
     self.x = self.topx - self.w/2
@@ -53,11 +60,11 @@ function Button.printTextToAlignWithButton(self)
 end 
   
 
-function Button.checkIfHover(self, functionToCall)
+function Button.checkIfHover(self)
     mouse_x, mouse_y = love.mouse.getPosition()
     if mouse_x > self.x and mouse_x < self.x + self.w  and mouse_y > self.y and mouse_y < self.y + self.h  then 
         function love.mousepressed()
-            functionToCall()
+            self.functionToCall()
         end 
         self.color = {1,.5,0,1}
     else
@@ -65,4 +72,17 @@ function Button.checkIfHover(self, functionToCall)
     end 
 end 
 
+function Button.ConfigDimensions(self)
+    self.fontSize = (WINDOW_WIDTH * self.fontSizePercentage)
+    self.font = love.graphics.newFont("assets/fonts/heycomic.ttf", self.fontSize)
+    love.graphics.setFont(self.font, self.fontSize)
+    self.w = self.font:getWidth(self.text) + self.fontOffset
+    self.h = self.font:getHeight(self.text)
+    print(self.w)
+end 
+
+
+function Button.addToLevelTable(self)
+    table.insert(self.tableToAddTo, self)
+end 
 

@@ -52,7 +52,9 @@ end
 ----------------------------------------------------------------
 ------------------HELPER FUNCTIONS FOR PLAER--------------------
 ----------------------------------------------------------------
+function Player.ConfigDimensions(self)
 
+end 
 
 -- Generate Hitbox based on init variables
 function Player.generateHitBox(self)
