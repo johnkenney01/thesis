@@ -7,7 +7,8 @@ function Header.new(self, text, x ,y, windowWDivide, windowHDivide, fontSize, co
     self.text = text
     self.windowHDivide = windowHDivide
     self.windowWDivide = windowWDivide
-    self.font = love.graphics.newFont('assets/fonts/heycomic.ttf', fontSize)
+    self.font = love.graphics.newFont(fontSize)
+    -- 'assets/fonts/heycomic.ttf',
     self.x = x 
     self.y = y
     self.color = color or {1,1,1,1}

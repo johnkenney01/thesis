@@ -8,8 +8,8 @@ function Player.new(self,x,y)
     self.spritesheet = love.graphics.newImage("assets/spritesheets/playerSpriteSheet.png")
     self.xTop = x 
     self.yTop = y
-    self.w = 250
-    self.h = 350
+    self.w = WINDOW_WIDTH * 0.1
+    self.h = WINDOW_HEIGHT * 0.20
     self.x = self.xTop - (self.w/2)
     self.y = self.yTop - (self.h/2)
     self.direction = "right"
@@ -20,7 +20,7 @@ function Player.new(self,x,y)
     -- QUAD STUFF
     self.getQuad(self)
     self.currentFrame = 1 
-    self.scaleX = self.w/21
+    self.scaleX = self.w/21 --Was 21
     self.scaleY = self.h/31
     self.timeSinceLastFrame = 0
     self.frameDelay = 0.17
@@ -34,14 +34,11 @@ function Player.draw(self)
     love.graphics.rectangle('line', self.hitbox.x, self.hitbox.y, self.hitbox.w, self.hitbox.h)
     -- love.graphics.draw(self.spritesheet, self.idleQuad[self.currentFrame], self.x, self.y+7,0, self.scaleX, self.scaleY, 1)
     self.drawSpecificQuad(self)
-    love.graphics.print('Time Since Last Frame: '..self.timeSinceLastFrame
-                        ..'\n'
-                        ..'Current State: '..self.state
-                        ..'\n',0,0)
-    love.graphics.print('Player Hitbox', self.hitbox.x + 10, self.hitbox.y + self.hitbox.h/2)
+    love.graphics.print("Screen W: "..WINDOW_WIDTH.."\nScreen H: "..WINDOW_HEIGHT.."\nPlW: "..self.w.."plh: "..self.h)    
 end 
 
 function Player.update(self, dt)
+    self.ConfigDimensions(self)
     self.movement(self,dt)
     self.updateHitBox(self,dt)
     self.setQuads(self,dt)
@@ -53,7 +50,12 @@ end
 ------------------HELPER FUNCTIONS FOR PLAER--------------------
 ----------------------------------------------------------------
 function Player.ConfigDimensions(self)
-
+    self.w = 0.1 * WINDOW_WIDTH
+    self.h = 0.20 * WINDOW_HEIGHT
+    self.scaleX = self.w/21 --Was 21
+    self.scaleY = self.h/31
+    self.hitbox.w = self.w * (2/3)
+    self.hitbox.h = self.h
 end 
 
 -- Generate Hitbox based on init variables

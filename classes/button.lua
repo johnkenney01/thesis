@@ -74,7 +74,8 @@ end
 
 function Button.ConfigDimensions(self)
     self.fontSize = (WINDOW_WIDTH * self.fontSizePercentage)
-    self.font = love.graphics.newFont("assets/fonts/heycomic.ttf", self.fontSize)
+    self.font = love.graphics.newFont( self.fontSize)
+    -- "assets/fonts/heycomic.ttf",
     love.graphics.setFont(self.font, self.fontSize)
     self.w = self.font:getWidth(self.text) + self.fontOffset
     self.h = self.font:getHeight(self.text)

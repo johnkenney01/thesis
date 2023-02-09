@@ -2,7 +2,7 @@ require('miscellaneous/helpers')
 
 Object = require('classes/classic')
 local tutorial = {}
-tutorial.font = love.graphics.newFont("assets/fonts/heycomic.ttf", 18)
+tutorial.font = love.graphics.newFont( 18)
 
 
 function tutorial.load()
@@ -15,7 +15,7 @@ end
 
 function tutorial.draw()
     tutorialLevel.draw(tutorialLevel)
-    love.graphics.setFont(tutorial.font)
+    -- love.graphics.setFont(tutorial.font)
 end 
 
 
