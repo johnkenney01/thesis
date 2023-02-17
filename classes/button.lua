@@ -84,6 +84,6 @@ end
 
 
 function Button.addToLevelTable(self)
-    table.insert(self.tableToAddTo, self)
+    table.insert(self.tableToAddTo, self)        
 end 
 

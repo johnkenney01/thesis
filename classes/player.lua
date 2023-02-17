@@ -15,6 +15,27 @@ function Player.new(self,x,y)
     self.direction = "right"
     self.state = "idle"
 
+    --Player Health & Healthbar
+    self.health = {}
+    self.health.maxHealth = 100
+    self.health.currentHealth = 100
+
+    self.health.healthBar = {}
+
+    self.health.healthBar.outerBar = {}
+    self.health.healthBar.outerBar.x = 0 + (WINDOW_WIDTH * 0.02)
+    self.health.healthBar.outerBar.y = 0 + (WINDOW_HEIGHT * 0.02)
+    self.health.healthBar.outerBar.w = WINDOW_WIDTH * 0.25
+    self.health.healthBar.outerBar.h = WINDOW_HEIGHT * 0.05
+    self.health.healthBar.outerBar.color = {1,0,0,1}
+
+    self.health.healthBar.innerBar = {}
+    self.health.healthBar.innerBar.w = self.health.healthBar.outerBar.w / 1.05
+    self.health.healthBar.innerBar.h = self.health.healthBar.outerBar.h / 2
+    self.health.healthBar.innerBar.x = self.health.healthBar.outerBar.x 
+    self.health.healthBar.innerBar.y = self.health.healthBar.outerBar.y
+    self.health.healthBar.innerBar.color = {0,1,0,1}
+
     self.hitbox = self.generateHitBox(self)
     
     -- QUAD STUFF
@@ -23,18 +44,22 @@ function Player.new(self,x,y)
     self.scaleX = self.w/21 --Was 21
     self.scaleY = self.h/31
     self.timeSinceLastFrame = 0
-    self.frameDelay = 0.17
+    self.frameDelay = 0.10
+    self.attackTimer = 0
+    self.isAttacking = false
 
 end 
 
 function Player.draw(self)
+    love.graphics.print("Julia",self.x,self.y + self.h,r,sx,sy,ox,oy)
+    self.DrawHealthBar(self)
     setColor(1,0,0,1)
     -- love.graphics.rectangle("line",self.x,self.y,self.w,self.h)
     setColor(1,1,1,1)
     love.graphics.rectangle('line', self.hitbox.x, self.hitbox.y, self.hitbox.w, self.hitbox.h)
     -- love.graphics.draw(self.spritesheet, self.idleQuad[self.currentFrame], self.x, self.y+7,0, self.scaleX, self.scaleY, 1)
     self.drawSpecificQuad(self)
-    love.graphics.print("Screen W: "..WINDOW_WIDTH.."\nScreen H: "..WINDOW_HEIGHT.."\nPlW: "..self.w.."plh: "..self.h)    
+       
 end 
 
 function Player.update(self, dt)
@@ -42,6 +67,7 @@ function Player.update(self, dt)
     self.movement(self,dt)
     self.updateHitBox(self,dt)
     self.setQuads(self,dt)
+    self.updateHealthBarSpecs(self,dt)
 end 
 
 
@@ -57,6 +83,40 @@ function Player.ConfigDimensions(self)
     self.hitbox.w = self.w * (2/3)
     self.hitbox.h = self.h
 end 
+
+-- Draws Health bar
+function Player.DrawHealthBar(self)
+    setColor(self.health.healthBar.outerBar.color)
+    love.graphics.rectangle("fill",self.health.healthBar.outerBar.x,
+                            self.health.healthBar.outerBar.y,
+                            self.health.healthBar.outerBar.w,
+                            self.health.healthBar.outerBar.h)
+    setColor(self.health.healthBar.innerBar.color)
+    love.graphics.rectangle("fill",
+                            self.health.healthBar.innerBar.x,
+                            self.health.healthBar.innerBar.y,
+                            self.health.healthBar.innerBar.w,
+                            self.health.healthBar.innerBar.h)
+end 
+
+function Player.updateHealthBarSpecs(self,dt)
+    self.health.healthBar.outerBar.w = WINDOW_WIDTH * 0.25
+    self.health.healthBar.outerBar.h = WINDOW_HEIGHT * 0.05
+    self.health.healthBar.innerBar.w = self.health.healthBar.outerBar.w / 1.05
+    self.health.healthBar.innerBar.h = self.health.healthBar.outerBar.h / 2.0
+    
+    
+    self.health.healthBar.outerBar.x = 0 + (WINDOW_WIDTH * 0.02)
+    self.health.healthBar.outerBar.y = 0 + (WINDOW_HEIGHT * 0.02)
+
+    -- self.tmp = self.health.healthBar.outerBar.x + (((self.health.healthBar.outerBar.x + self.health.healthBar.outerBar.w) - ((self.health.healthBar.innerBar.x + self.health.healthBar.innerBar.w)))/2)
+
+
+    self.tmp0 = self.health.healthBar.outerBar.x + self.health.healthBar.outerBar.w 
+    self.health.healthBar.innerBar.x = (self.tmp0 )
+    self.health.healthBar.innerBar.y = self.health.healthBar.outerBar.y
+end 
+
 
 -- Generate Hitbox based on init variables
 function Player.generateHitBox(self)
@@ -93,10 +153,28 @@ function Player.movement(self,dt)
         self.state = "running"
         self.x = self.x + 15
         self.hitbox.x = self.hitbox.x + 15
+    elseif love.keyboard.isDown("space") and self.attackTimer < 1 then 
+        self.state = "attack"
     else 
         self.state = 'idle'
     end 
+
+    if love.keyboard.isDown('space') then 
+        self.state = "attack" 
+        self.isAttacking = true
+        self.attackTimer = self.attackTimer + dt
+        if self.attackTimer > .5 then 
+            self.isAttacking = false
+        end 
+
+    else
+        self.attackTimer = 0
+        self.isAttacking = false
+        self.currentAttack1Frame = 1
+
+    end 
 end 
+
 
 -- Updates the position variables for the hitbox
 function Player.updateHitBox(self, dt)
@@ -127,6 +205,16 @@ function Player.getQuad(self)
     self.runningQuad[5] = love.graphics.newQuad(264, 45, 29, 28,self.spritesheet:getWidth(),self.spritesheet:getHeight())
     self.runningQuad[6] = love.graphics.newQuad(315, 45, 29, 28,self.spritesheet:getWidth(),self.spritesheet:getHeight())
 
+    self.attackQuad1 = {}
+    self.currentAttack1Frame = 1
+    self.attackQuad1[1] = love.graphics.newQuad(7,222,32,36,self.spritesheet:getWidth(),self.spritesheet:getHeight())
+    self.attackQuad1[2] = love.graphics.newQuad(58,222,31,36,self.spritesheet:getWidth(),self.spritesheet:getHeight())
+    self.attackQuad1[3] = love.graphics.newQuad(111,222,37,36,self.spritesheet:getWidth(),self.spritesheet:getHeight())
+    self.attackQuad1[4] = love.graphics.newQuad(161,222,33,36,self.spritesheet:getWidth(),self.spritesheet:getHeight())
+    self.attackQuad1[5] = love.graphics.newQuad(211,222,28,36,self.spritesheet:getWidth(),self.spritesheet:getHeight())
+    self.attackQuad1[6] = love.graphics.newQuad(258,222,32,36,self.spritesheet:getWidth(),self.spritesheet:getHeight())
+    self.attackQuad1[7] = love.graphics.newQuad(311,222,26,36,self.spritesheet:getWidth(),self.spritesheet:getHeight())
+
 end 
 
 -- Depending on the state of the player sets the quad frames 
@@ -149,6 +237,12 @@ function Player.setQuads(self, dt)
             else
                 self.currentRunningFrame = self.currentRunningFrame + 1
             end 
+        elseif self.state == "attack" then 
+            if self.currentAttack1Frame >= 7 then 
+                self.currentAttack1Frame = 1
+            else
+                self.currentAttack1Frame = self.currentAttack1Frame + 1
+            end 
         end  
     end 
 end 
@@ -167,6 +261,11 @@ function Player.drawSpecificQuad(self)
         elseif self.direction == 'left' then 
             love.graphics.draw(self.spritesheet, self.runningQuad[self.currentRunningFrame], self.x+self.w, self.y+28,0, -self.scaleX, self.scaleY, 1)
         end 
-        
+    elseif self.state == "attack" then 
+        if self.direction == "right" then 
+            love.graphics.draw(self.spritesheet, self.attackQuad1[self.currentAttack1Frame], self.x, self.y - 25 , 0, self.scaleX, self.scaleY, 1)
+        elseif self.direction =='left' then 
+            love.graphics.draw(self.spritesheet, self.attackQuad1[self.currentAttack1Frame], self.x + self.w, self.y - 25, 0, -self.scaleX, self.scaleY, 1)
+        end 
     end 
 end 

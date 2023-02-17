@@ -7,7 +7,7 @@ titleColor = {1,1,0.3,1}
 
 function intro.load()
     intro.contents = {}
-    titleHeader = Header(header1,WINDOW_WIDTH/50, WINDOW_HEIGHT/3,1,1, WINDOW_WIDTH*.30,titleColor, false, intro.contents )
+    titleHeader = Header(header1,WINDOW_WIDTH/50, WINDOW_HEIGHT/3,1,1, WINDOW_WIDTH*.20,titleColor, false, intro.contents )
     -- BUTTONS --
     startButton = Button('Start Game', "start", 2, 2, 0.025, startButton_functionToCall, intro.contents)
     loadButton = Button('Load Game', 'load', 2, 1.75,  0.025, nil,  intro.contents )

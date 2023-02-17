@@ -16,6 +16,7 @@ end
 function tutorial.draw()
     tutorialLevel.draw(tutorialLevel)
     -- love.graphics.setFont(tutorial.font)
+    love.graphics.print(tostring(player1.isAttacking).."\n"..player1.attackTimer.."\n"..player1.currentAttack1Frame.."\n"..player1.tmp0, WINDOW_WIDTH - WINDOW_WIDTH/5,100)
 end 
 
 

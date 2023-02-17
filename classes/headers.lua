@@ -30,9 +30,7 @@ function Header.draw(self)
     love.graphics.printf(self.text, self.x,self.y,WINDOW_WIDTH/self.windowWDivide,'center')
 end 
 function Header.update(self, header)
-
-        
-    
+    self.font = love.graphics.newFont(WINDOW_WIDTH*.15)
 end 
 
 function Header.addToLevelTable(self)
