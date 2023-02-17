@@ -30,11 +30,23 @@ function Player.new(self,x,y)
     self.health.healthBar.outerBar.color = {1,0,0,1}
 
     self.health.healthBar.innerBar = {}
-    self.health.healthBar.innerBar.w = self.health.healthBar.outerBar.w / 1.05
-    self.health.healthBar.innerBar.h = self.health.healthBar.outerBar.h / 2
-    self.health.healthBar.innerBar.x = self.health.healthBar.outerBar.x 
+    self.health.healthBar.innerBar.startW = self.health.healthBar.outerBar.w / 1.05
+    self.health.healthBar.innerBar.currentW = self.health.healthBar.innerBar.startW
+
+    self.health.healthBar.innerBar.h = self.health.healthBar.outerBar.h / 1.5
+    self.health.healthBar.innerBar.x = 0
     self.health.healthBar.innerBar.y = self.health.healthBar.outerBar.y
     self.health.healthBar.innerBar.color = {0,1,0,1}
+
+    
+    self.tmp0 = (self.health.healthBar.outerBar.x + self.health.healthBar.outerBar.w)
+    self.tmp1 = self.tmp0 - (self.health.healthBar.innerBar.x + self.health.healthBar.innerBar.startW)
+    self.tmp2 = self.health.healthBar.outerBar.x +(self.tmp1/2)
+    self.health.healthBar.innerBar.x = (self.tmp2)
+
+    self.tmp00 = (self.health.healthBar.outerBar.y + self.health.healthBar.outerBar.h)
+    self.tmp01 = self.tmp00 - (self.health.healthBar.innerBar.y + self.health.healthBar.innerBar.h)
+    self.tmp02 = self.health.healthBar.outerBar.y +(self.tmp01/2)
 
     self.hitbox = self.generateHitBox(self)
     
@@ -51,7 +63,6 @@ function Player.new(self,x,y)
 end 
 
 function Player.draw(self)
-    love.graphics.print("Julia",self.x,self.y + self.h,r,sx,sy,ox,oy)
     self.DrawHealthBar(self)
     setColor(1,0,0,1)
     -- love.graphics.rectangle("line",self.x,self.y,self.w,self.h)
@@ -68,6 +79,7 @@ function Player.update(self, dt)
     self.updateHitBox(self,dt)
     self.setQuads(self,dt)
     self.updateHealthBarSpecs(self,dt)
+    -- self.updateHealth(self,dt)
 end 
 
 
@@ -95,26 +107,51 @@ function Player.DrawHealthBar(self)
     love.graphics.rectangle("fill",
                             self.health.healthBar.innerBar.x,
                             self.health.healthBar.innerBar.y,
-                            self.health.healthBar.innerBar.w,
+                            self.health.healthBar.innerBar.currentW,
                             self.health.healthBar.innerBar.h)
+
+    setColor(1,0,0,1)
+    
+    love.graphics.print(self.health.currentHealth.."/"..self.health.maxHealth,
+                        (self.health.healthBar.innerBar.x + self.health.healthBar.innerBar.currentW)/3,
+                        self.health.healthBar.innerBar.y,
+                        r,
+                        sx,
+                        sy,
+                        ox,
+                        oy)
 end 
 
 function Player.updateHealthBarSpecs(self,dt)
     self.health.healthBar.outerBar.w = WINDOW_WIDTH * 0.25
     self.health.healthBar.outerBar.h = WINDOW_HEIGHT * 0.05
-    self.health.healthBar.innerBar.w = self.health.healthBar.outerBar.w / 1.05
-    self.health.healthBar.innerBar.h = self.health.healthBar.outerBar.h / 2.0
+    self.health.healthBar.innerBar.startW = self.health.healthBar.outerBar.w / 1.05
+    self.updateHealth(self)
+    self.health.healthBar.innerBar.h = self.health.healthBar.outerBar.h / 1.25
     
     
     self.health.healthBar.outerBar.x = 0 + (WINDOW_WIDTH * 0.02)
     self.health.healthBar.outerBar.y = 0 + (WINDOW_HEIGHT * 0.02)
 
-    -- self.tmp = self.health.healthBar.outerBar.x + (((self.health.healthBar.outerBar.x + self.health.healthBar.outerBar.w) - ((self.health.healthBar.innerBar.x + self.health.healthBar.innerBar.w)))/2)
+    self.tmp0 = (self.health.healthBar.outerBar.x + self.health.healthBar.outerBar.w)
+    self.tmp1 = self.tmp0 - (self.health.healthBar.innerBar.x + self.health.healthBar.innerBar.startW)
+    self.tmp2 = self.health.healthBar.outerBar.x +(self.tmp1/2)
+    self.health.healthBar.innerBar.x = (self.tmp2)
 
+    self.tmp00 = (self.health.healthBar.outerBar.y + self.health.healthBar.outerBar.h)
+    self.tmp01 = self.tmp00 - (self.health.healthBar.innerBar.y + self.health.healthBar.innerBar.h)
+    self.tmp02 = self.health.healthBar.outerBar.y +(self.tmp01/2) 
+    self.health.healthBar.innerBar.y = self.tmp02
+end 
 
-    self.tmp0 = self.health.healthBar.outerBar.x + self.health.healthBar.outerBar.w 
-    self.health.healthBar.innerBar.x = (self.tmp0 )
-    self.health.healthBar.innerBar.y = self.health.healthBar.outerBar.y
+function Player.updateHealth(self,dt)
+    if love.keyboard.isDown('p') then 
+        self.health.currentHealth = self.health.currentHealth - 10
+        self.health.healthBar.innerBar.currentW = self.health.healthBar.innerBar.currentW -  (self.health.healthBar.innerBar.startW * .10)
+
+    else
+        self.health.healthBar.innerBar.currentW = self.health.healthBar.innerBar.currentW
+    end
 end 
 
 

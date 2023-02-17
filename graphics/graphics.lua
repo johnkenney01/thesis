@@ -26,6 +26,8 @@ function toggleFullScreen()
             else
                 love.window.setFullscreen(true, "desktop")
             end
+        elseif key == '2' then 
+            love.event.quit()
         end 
     end 
 end 
