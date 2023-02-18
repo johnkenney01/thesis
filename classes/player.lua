@@ -19,34 +19,24 @@ function Player.new(self,x,y)
     self.health = {}
     self.health.maxHealth = 100
     self.health.currentHealth = 100
-
+    -- All HealthBar Vars
     self.health.healthBar = {}
-
+    -- Outer Health Bar
     self.health.healthBar.outerBar = {}
     self.health.healthBar.outerBar.x = 0 + (WINDOW_WIDTH * 0.02)
     self.health.healthBar.outerBar.y = 0 + (WINDOW_HEIGHT * 0.02)
-    self.health.healthBar.outerBar.w = WINDOW_WIDTH * 0.25
+    self.health.healthBar.outerBar.w = WINDOW_WIDTH * 0.35
     self.health.healthBar.outerBar.h = WINDOW_HEIGHT * 0.05
-    self.health.healthBar.outerBar.color = {1,0,0,1}
-
+    self.health.healthBar.outerBar.color = {1,0,0,1} -- Red
+    -- Inner Health Bar
     self.health.healthBar.innerBar = {}
-    self.health.healthBar.innerBar.startW = self.health.healthBar.outerBar.w / 1.05
-    self.health.healthBar.innerBar.currentW = self.health.healthBar.innerBar.startW
-
-    self.health.healthBar.innerBar.h = self.health.healthBar.outerBar.h / 1.5
-    self.health.healthBar.innerBar.x = 0
+    self.health.healthBar.innerBar.maxWidth = self.health.healthBar.outerBar.w * 0.75
+    self.health.healthBar.innerBar.currentWidth = self.health.healthBar.innerBar.maxWidth
+    self.health.healthBar.innerBar.h = self.health.healthBar.outerBar.h * 0.75
+    self.health.healthBar.innerBar.x = self.health.healthBar.outerBar.x
     self.health.healthBar.innerBar.y = self.health.healthBar.outerBar.y
-    self.health.healthBar.innerBar.color = {0,1,0,1}
+    self.health.healthBar.innerBar.color = {0,1,0,1} -- Green
 
-    
-    self.tmp0 = (self.health.healthBar.outerBar.x + self.health.healthBar.outerBar.w)
-    self.tmp1 = self.tmp0 - (self.health.healthBar.innerBar.x + self.health.healthBar.innerBar.startW)
-    self.tmp2 = self.health.healthBar.outerBar.x +(self.tmp1/2)
-    self.health.healthBar.innerBar.x = (self.tmp2)
-
-    self.tmp00 = (self.health.healthBar.outerBar.y + self.health.healthBar.outerBar.h)
-    self.tmp01 = self.tmp00 - (self.health.healthBar.innerBar.y + self.health.healthBar.innerBar.h)
-    self.tmp02 = self.health.healthBar.outerBar.y +(self.tmp01/2)
 
     self.hitbox = self.generateHitBox(self)
     
@@ -79,7 +69,7 @@ function Player.update(self, dt)
     self.updateHitBox(self,dt)
     self.setQuads(self,dt)
     self.updateHealthBarSpecs(self,dt)
-    -- self.updateHealth(self,dt)
+    self.updateHealth(self,dt)
 end 
 
 
@@ -107,50 +97,56 @@ function Player.DrawHealthBar(self)
     love.graphics.rectangle("fill",
                             self.health.healthBar.innerBar.x,
                             self.health.healthBar.innerBar.y,
-                            self.health.healthBar.innerBar.currentW,
+                            self.health.healthBar.innerBar.currentWidth,
                             self.health.healthBar.innerBar.h)
 
-    setColor(1,0,0,1)
+    setColor(1,1,1,1)
     
-    love.graphics.print(self.health.currentHealth.."/"..self.health.maxHealth,
-                        (self.health.healthBar.innerBar.x + self.health.healthBar.innerBar.currentW)/3,
-                        self.health.healthBar.innerBar.y,
-                        r,
-                        sx,
-                        sy,
-                        ox,
-                        oy)
+    
 end 
 
+-- Dynamically Resizes the inner health bar based on screen res & current health
 function Player.updateHealthBarSpecs(self,dt)
     self.health.healthBar.outerBar.w = WINDOW_WIDTH * 0.25
-    self.health.healthBar.outerBar.h = WINDOW_HEIGHT * 0.05
-    self.health.healthBar.innerBar.startW = self.health.healthBar.outerBar.w / 1.05
-    self.updateHealth(self)
-    self.health.healthBar.innerBar.h = self.health.healthBar.outerBar.h / 1.25
-    
-    
-    self.health.healthBar.outerBar.x = 0 + (WINDOW_WIDTH * 0.02)
-    self.health.healthBar.outerBar.y = 0 + (WINDOW_HEIGHT * 0.02)
+    self.health.healthBar.outerBar.h = WINDOW_HEIGHT * 0.02
+    self.health.healthBar.innerBar.h = self.health.healthBar.outerBar.h * 0.75
+    self.health.healthBar.innerBar.maxWidth =  self.health.healthBar.outerBar.w * 0.95
+    self.health.healthBar.innerBar.currentWidth = self.updateInnerHealthBarWidth(self,dt)
+    self.health.healthBar.innerBar.x = self.health.healthBar.outerBar.x + self.updateInnerHealthBarXPos(self, dt)
+    self.health.healthBar.innerBar.y = self.health.healthBar.outerBar.y + self.health.healthBar.outerBar.h / 8
 
-    self.tmp0 = (self.health.healthBar.outerBar.x + self.health.healthBar.outerBar.w)
-    self.tmp1 = self.tmp0 - (self.health.healthBar.innerBar.x + self.health.healthBar.innerBar.startW)
-    self.tmp2 = self.health.healthBar.outerBar.x +(self.tmp1/2)
-    self.health.healthBar.innerBar.x = (self.tmp2)
+    self.healthFont = love.graphics.newFont(self.health.healthBar.innerBar.maxWidth / self.health.healthBar.innerBar.h)
 
-    self.tmp00 = (self.health.healthBar.outerBar.y + self.health.healthBar.outerBar.h)
-    self.tmp01 = self.tmp00 - (self.health.healthBar.innerBar.y + self.health.healthBar.innerBar.h)
-    self.tmp02 = self.health.healthBar.outerBar.y +(self.tmp01/2) 
-    self.health.healthBar.innerBar.y = self.tmp02
 end 
 
+-- Dynamically places the inner bars x pos center in the outer bar
+function Player.updateInnerHealthBarXPos(self, dt)
+    local tmp = {}
+    -- x point of the end of outer bar
+    tmp.maxOuterX = self.health.healthBar.outerBar.x + self.health.healthBar.outerBar.w
+    -- distance between max width of inner & outer bar
+    tmp.distanceOfBars = tmp.maxOuterX - (self.health.healthBar.innerBar.x + self.health.healthBar.innerBar.maxWidth)
+    -- half of distance between bars
+    tmp.centralVar = tmp.distanceOfBars * 0.5
+
+    return tmp.centralVar
+end 
+
+function Player.updateInnerHealthBarWidth(self,dt)
+    -- The percentage of current health to max health 
+    self.health.healthBar.innerBar.percentageChange = self.health.currentHealth / self.health.maxHealth
+    self.health.healthBar.innerBar.currentWidth = self.health.healthBar.innerBar.percentageChange * self.health.healthBar.innerBar.maxWidth
+    return self.health.healthBar.innerBar.currentWidth
+end 
+
+-- Handles the health changes
 function Player.updateHealth(self,dt)
     if love.keyboard.isDown('p') then 
         self.health.currentHealth = self.health.currentHealth - 10
-        self.health.healthBar.innerBar.currentW = self.health.healthBar.innerBar.currentW -  (self.health.healthBar.innerBar.startW * .10)
+        if self.health.currentHealth <= 0 then 
+            self.health.currentHealth = 0
+        end 
 
-    else
-        self.health.healthBar.innerBar.currentW = self.health.healthBar.innerBar.currentW
     end
 end 
 
