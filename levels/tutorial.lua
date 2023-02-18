@@ -16,7 +16,10 @@ end
 function tutorial.draw()
     tutorialLevel.draw(tutorialLevel)
     -- love.graphics.setFont(tutorial.font)
-    print("Garbage"..collectgarbage("count"))
+    local tmp = tutorialLevel.getContents(tutorialLevel)
+    for i = 1, #tmp do
+        print(tmp[i].__type)
+    end 
 end 
 
 
