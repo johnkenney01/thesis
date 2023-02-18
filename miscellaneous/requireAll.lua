@@ -18,6 +18,7 @@ function getAllRequirements()
     require('classes/button')
     require('classes/headers')
     require('classes/player')
+    require("externalLibraries/camera")
     
     
 end 
