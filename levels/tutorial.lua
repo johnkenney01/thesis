@@ -16,7 +16,7 @@ end
 function tutorial.draw()
     tutorialLevel.draw(tutorialLevel)
     -- love.graphics.setFont(tutorial.font)
-    love.graphics.print(tostring(player1.health.healthBar.innerBar.startW.."\n"..player1.health.healthBar.innerBar.currentW), WINDOW_WIDTH - WINDOW_WIDTH/5, 100)
+    print("Garbage"..collectgarbage("count"))
 end 
 
 
