@@ -14,7 +14,7 @@ function intro.load()
     optionsButton = Button('Options', "options", 2, 1.53125, 0.025, optionsButton_functionToCall, intro.contents)
     quitButton = Button('Quit', "quit", 2, 1.33984375,  0.025, quitButton_functionToCall, intro.contents)
     --------------
-    introLevel = Level(intro.contents)
+    introLevel = nonLevelState(intro.contents)
 
     backgroundMainMenu = createBackGroundImage('assets/intro.jpg')
 end 
