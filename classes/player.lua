@@ -5,6 +5,7 @@ Player = Object:extend()
 
 function Player.new(self,x,y)
     -- LUA x and Y by default are top left
+    self.__type = "player"
     self.spritesheet = love.graphics.newImage("assets/spritesheets/playerSpriteSheet.png")
     self.xTop = x 
     self.yTop = y
@@ -14,6 +15,7 @@ function Player.new(self,x,y)
     self.y = self.yTop - (self.h/2)
     self.direction = "right"
     self.state = "idle"
+
 
     --Player Health & Healthbar
     self.health = {}
