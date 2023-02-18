@@ -19,6 +19,8 @@ function getAllRequirements()
     require('classes/headers')
     require('classes/player')
     require("externalLibraries/camera")
+    require("classes/nonLevelState")
+    require("externalLibraries/sti")
     
     
 end 
