@@ -29,7 +29,10 @@ end -- end of love.draw()
 
 -----------------------------------------
 function love.update(dt)
+    collectgarbage("collect")
+    
     allGraphics(dt) --Updates the graphics, if we were to switch out of full screen 
     allGameStates[gameState].update(dt)
+    collectgarbage("collect")
 end -- end of love.update(dt)
 -----------------------------------------
