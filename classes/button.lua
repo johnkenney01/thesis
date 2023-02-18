@@ -4,6 +4,7 @@ Object = require('classes/classic')
 Button = Object:extend()
 
 function Button.new(self, text, action ,windowWDivide, windowHDivide ,fontSizePercentage, functionToCall, table)
+    self.__type = "button"
     -- x and y on rectangles are top left, we will reassign to center down below.
     self.windowWDivide = windowWDivide -- Where along the x axis you want the text
     self.windowHDivide = windowHDivide -- Where along the y axis you want the text
