@@ -21,6 +21,8 @@ function Player.new(self,x,y)
     self.health = {}
     self.health.maxHealth = 100
     self.health.currentHealth = 100
+    self.isAlive = true
+    self.isBeingAttacked = false
     -- All HealthBar Vars
     self.health.healthBar = {}
     -- Outer Health Bar
@@ -39,7 +41,7 @@ function Player.new(self,x,y)
     self.health.healthBar.innerBar.y = self.health.healthBar.outerBar.y
     self.health.healthBar.innerBar.color = {0,1,0,1} -- Green
 
-
+    -- Hitbox things
     self.hitbox = self.generateHitBox(self)
     
     -- QUAD STUFF
@@ -54,8 +56,8 @@ function Player.new(self,x,y)
 
 end 
 
+-- This should only include the actual players stuff not including HUD or Health bar
 function Player.draw(self)
-    self.DrawHealthBar(self)
     setColor(1,0,0,1)
     -- love.graphics.rectangle("line",self.x,self.y,self.w,self.h)
     setColor(1,1,1,1)
@@ -63,6 +65,10 @@ function Player.draw(self)
     -- love.graphics.draw(self.spritesheet, self.idleQuad[self.currentFrame], self.x, self.y+7,0, self.scaleX, self.scaleY, 1)
     self.drawSpecificQuad(self)
        
+end 
+
+function Player.drawHUDThings(self)
+    self.DrawHealthBar(self)
 end 
 
 function Player.update(self, dt)
