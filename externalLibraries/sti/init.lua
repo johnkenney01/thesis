@@ -923,6 +923,7 @@ end
 -- @param layer The Layer to draw
 function Map.drawLayer(_, layer)
 	local r,g,b,a = lg.getColor()
+	
 	lg.setColor(r, g, b, a * layer.opacity)
 	layer:draw()
 	lg.setColor(r,g,b,a)
