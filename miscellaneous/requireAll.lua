@@ -21,6 +21,7 @@ function getAllRequirements()
     require("externalLibraries/camera")
     require("classes/nonLevelState")
     require("externalLibraries/sti")
+    require("externalLibraries/windfield")
     
     
 end 
