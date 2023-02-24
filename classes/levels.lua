@@ -29,10 +29,15 @@ end
 
 function Level.draw(self)
     -- Everything will be seen through the camera's POV that is within cam:attach() and cam:Detach()
-  
+    self.gameMap.resize(2)
+    love.graphics.scale(WINDOW_WIDTH, WINDOW_HEIGHT)
     self.cam:attach()
         -- self.gameMap:drawLayer(self.gameMap.layers["Ground"])
-        self.gameMap:drawLayer(self.gameMap.layers["Ground"])
+        for i = 1, #self.gameMap.layers do 
+            if self.gameMap.layers[i].name ~= "Object Layer 1" then 
+                self.gameMap:drawLayer(self.gameMap.layers[i])
+            end 
+        end 
         for object = 1, #self.nonPlayerContents do 
             self.nonPlayerContents[object].draw(self.nonPlayerContents[object])
         end 
