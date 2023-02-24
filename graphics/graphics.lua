@@ -5,6 +5,8 @@ function intializeGraphics()
     WINDOW_HEIGHT = love.graphics.getHeight()
     love.window.setFullscreen(true,"desktop")
     love.graphics.setDefaultFilter("nearest", "nearest")
+    -- WINDOW_WIDTH = love.graphics.getWidth()
+    -- WINDOW_HEIGHT = love.graphics.getHeight()
 end 
 
 
