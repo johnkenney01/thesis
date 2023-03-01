@@ -22,6 +22,7 @@ function getAllRequirements()
     require("classes/nonLevelState")
     require("externalLibraries/sti")
     require("externalLibraries/windfield")
+    require("classes/gameMap")
     
     
 end 

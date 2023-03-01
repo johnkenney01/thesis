@@ -13,9 +13,9 @@ function Level.new(self, contents)
     -- Will be player, passed from level to level
     self.player = nil
     -- Camera for each level
-    self.cam = camera()
+    tmp = WINDOW_WIDTH/1080
+    self.cam = camera(0,0)
     -- Game Map
-    self.gameMap = sti('assets/gameMaps/thesis2TutMap.lua')
     -- Sorts and stores objects passed in to correct table
     for object = 1, #self.contents do
         if self.contents[object].__type == "player" then 
@@ -27,17 +27,10 @@ function Level.new(self, contents)
      
 end 
 
-function Level.draw(self)
+function Level.draw(self)    
+    self.cam:zoomTo(WINDOW_WIDTH/1920)
     -- Everything will be seen through the camera's POV that is within cam:attach() and cam:Detach()
-    self.gameMap.resize(2)
-    love.graphics.scale(WINDOW_WIDTH, WINDOW_HEIGHT)
     self.cam:attach()
-        -- self.gameMap:drawLayer(self.gameMap.layers["Ground"])
-        for i = 1, #self.gameMap.layers do 
-            if self.gameMap.layers[i].name ~= "Object Layer 1" then 
-                self.gameMap:drawLayer(self.gameMap.layers[i])
-            end 
-        end 
         for object = 1, #self.nonPlayerContents do 
             self.nonPlayerContents[object].draw(self.nonPlayerContents[object])
         end 
@@ -51,7 +44,6 @@ function Level.draw(self)
 end 
 
 function Level.update(self, dt)
-    self.gameMap:update(dt)
     self.cam:lookAt(self.player.x, self.player.y)
     self.player.update(self.player,dt)
     for i = 1, #self.nonPlayerContents do

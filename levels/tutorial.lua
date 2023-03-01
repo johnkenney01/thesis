@@ -8,18 +8,15 @@ tutorial.font = love.graphics.newFont( 18)
 function tutorial.load()
     tmp = {}
     player1 = Player(400,300)
-
+    tutorialMap = gameMap('assets/gameMaps/thesis2TutMap.lua')
     table.insert(tmp, player1)
+    table.insert(tmp, tutorialMap)
     tutorialLevel = Level(tmp)
 end 
 
 function tutorial.draw()
     tutorialLevel.draw(tutorialLevel)
     -- love.graphics.setFont(tutorial.font)
-    local tmp = tutorialLevel.getContents(tutorialLevel)
-    for i = 1, #tmp do
-        print(tmp[i].__type)
-    end 
 end 
 
 
