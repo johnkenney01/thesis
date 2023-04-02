@@ -80,7 +80,7 @@ function Button.ConfigDimensions(self)
     love.graphics.setFont(self.font, self.fontSize)
     self.w = self.font:getWidth(self.text) + self.fontOffset
     self.h = self.font:getHeight(self.text)
-    print(self.w)
+
 end 
 
 
