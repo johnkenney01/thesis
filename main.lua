@@ -24,7 +24,6 @@ end -- end of love.load()
 -----------------------------------------
 function love.draw()
     allGameStates[gameState].draw()
-    print(gameIsPaused)
 end -- end of love.draw()
 -----------------------------------------
 
