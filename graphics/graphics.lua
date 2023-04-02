@@ -19,17 +19,28 @@ end
 
 
 
-function toggleFullScreen()
+function toggleFullScreen(key)
+    print("G")
     isFullScreen = love.window.getFullscreen()
-    function love.keyreleased(key)
-        if key == 'f1' then 
+    if gameIsPaused == true then 
+        if key == 'f1'then 
             if isFullScreen == true then 
                 love.window.setFullscreen(false, "desktop")
             else
                 love.window.setFullscreen(true, "desktop")
             end
-        elseif key == '2' then 
+        elseif key == '3' then 
             love.event.quit()
+        end 
+    end  
+end 
+
+function togglePause(key)
+    if key == 'p' then 
+        if gameIsPaused == true then 
+            gameIsPaused = false
+        else
+            gameIsPaused = true
         end 
     end 
 end 
