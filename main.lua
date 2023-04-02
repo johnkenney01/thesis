@@ -6,7 +6,7 @@
 require('miscellaneous/requireAll')
 getAllRequirements()
 love._openConsole()
-
+gameIsPaused = true
 gameState = 1
 --------------------
 -- This table allGameStates, will hold all the tables which are essentially all the levels of the game
@@ -24,15 +24,20 @@ end -- end of love.load()
 -----------------------------------------
 function love.draw()
     allGameStates[gameState].draw()
+    print(gameIsPaused)
 end -- end of love.draw()
 -----------------------------------------
 
 -----------------------------------------
 function love.update(dt)
     collectgarbage("collect")
-    
     allGraphics(dt) --Updates the graphics, if we were to switch out of full screen 
     allGameStates[gameState].update(dt)
     collectgarbage("collect")
+    function love.keyreleased(key)
+        toggleFullScreen(key)
+        player1.switchAttack(player1, key)
+        togglePause(key)
+    end 
 end -- end of love.update(dt)
 -----------------------------------------
