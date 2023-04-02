@@ -5,7 +5,9 @@ sti = require("externalLibraries/sti")
 wf = require("externalLibraries/windfield")
 Level = Object:extend()
 
-function Level.new(self, contents)
+function Level.new(self, contents, world)
+    -- new world for phyics, params 0,0 for 0 gravity 
+    self.world = world
     -- Large Data Dump of all contents
     self.contents = contents
     -- Eventually will be all non player objects
@@ -13,7 +15,6 @@ function Level.new(self, contents)
     -- Will be player, passed from level to level
     self.player = nil
     -- Camera for each level
-    tmp = WINDOW_WIDTH/1080
     self.cam = camera(0,0)
     -- Game Map
     -- Sorts and stores objects passed in to correct table
@@ -59,6 +60,6 @@ function Level.getContents(self,dt)
     return self.contents
 end 
 
-function Level.genNewWorld(self)
-
+function Level.getWorld(self)
+    return self.world
 end 
