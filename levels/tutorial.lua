@@ -6,18 +6,28 @@ tutorial.font = love.graphics.newFont( 18)
 
 
 function tutorial.load()
+
     tmp = {}
+    enemy = {}
     tutorial.world = wf.newWorld(0,0)
+    tutorial.world.name = "tut"
+
     player1 = Player(400,300, tutorial.world)
+    for i = 1, 10 do 
+        table.insert(enemy, Enemy(i *250, 100, "assets/spritesheets/wizardEnemy.png",tutorial.world))
+    end 
     tutorialMap = gameMap('assets/gameMaps/TestMap128.lua', tutorial.world)
+    
     table.insert(tmp, player1)
     table.insert(tmp, tutorialMap)
-    tutorialLevel = Level(tmp)
+    table.insert(tmp, enemy)
+    tutorialLevel = Level(tmp, tutorial.world)
 end 
 
-function tutorial.draw()
+function tutorial.draw() 
     tutorialLevel.draw(tutorialLevel)
-    love.graphics.print(player1.w.."\n"..player1.colliderWidthStart.."\n"..player1.attackType,100,100)
+    print("tut: "..tutorial.world.name)
+    print("Playa: "..player1.world.name)
 end 
 
 
