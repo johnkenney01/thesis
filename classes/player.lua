@@ -32,7 +32,7 @@ function Player.new(self,x,y,world)
     self.scaleX = self.w/21 --Was 21
     self.scaleY = self.h/31
     self.timeSinceLastFrame = 0
-    self.frameDelay = 0.10
+    self.frameDelay = 0.20
     self.attackTimer = 0
     self.isAttacking = false
 
