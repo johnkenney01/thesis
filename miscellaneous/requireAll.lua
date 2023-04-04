@@ -23,6 +23,7 @@ function getAllRequirements()
     require("externalLibraries/sti")
     require("externalLibraries/windfield")
     require("classes/gameMap")
+    require("classes/enemy")
     
     
 end 
