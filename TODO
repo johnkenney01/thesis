@@ -1,4 +1,7 @@
-1. Start new player attack type 
-2. Start Enemies class 
-3. Start interaction between player and enemy 
-4. Start Spawn points in map for player and enemies
+Last Updated  -> 3Apr2023
+1. Finish enemy quad, Align images in colliders 
+2. Scale Enemy spritesheet to match correct intended size: 
+3. Detection Circle
+    - Distance formula 
+    - Start Attacking if in range 
+    - Link between player and enemy for health and attack, collisions ? Physics Wiki...
