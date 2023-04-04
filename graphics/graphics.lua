@@ -20,7 +20,6 @@ end
 
 
 function toggleFullScreen(key)
-    print("G")
     isFullScreen = love.window.getFullscreen()
     if gameIsPaused == true then 
         if key == 'f1'then 
