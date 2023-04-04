@@ -26,7 +26,6 @@ function gameMap.draw(self)
             self.map:drawLayer(self.map.layers[layer])   
         end 
     end 
-    self.world:draw()
 end 
 
 function gameMap.update(self,dt)
