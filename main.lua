@@ -18,6 +18,8 @@ function love.load()
     for i = 1, #allGameStates do
         allGameStates[i].load()
     end 
+    love.debug = nil
+    
 end -- end of love.load()
 -----------------------------------------
 
