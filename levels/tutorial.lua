@@ -26,7 +26,8 @@ end
 
 function tutorial.draw() 
     tutorialLevel.draw(tutorialLevel)
-    love.graphics.print(enemy[1].x.."\n"..enemy[1].collider:getX(),100,100)
+    --love.graphics.print((enemy[1].collider:getY()-(enemy[1].h/2)/2).."\n"..enemy[1].y - enemy[1].h/2,100,100)
+    love.graphics.print(enemy[1].h,0,0)
 end 
 
 
