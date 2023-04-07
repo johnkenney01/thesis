@@ -13,7 +13,7 @@ function Enemy.new(self,x,y,spritesheet,world, scale)
     self.w = 32
     self.h = 64
     self.getQuads(self)
-    self.direction = "right"
+    self.direction = "left"
     self.state = "idle"
     self.speed = 175 
     self.vx = 0
@@ -28,6 +28,8 @@ function Enemy.new(self,x,y,spritesheet,world, scale)
     -- Quad 
     self.quadNum = 1
     self.time = 0
+    -- Detection Circle
+    self.initDetectionCirlce(self)
 end 
 
 function Enemy.draw(self)
@@ -36,6 +38,9 @@ function Enemy.draw(self)
     love.graphics.rectangle('line', self.hitbox.x, self.hitbox.y, self.hitbox.w, self.hitbox.h)
     self.DrawHealthBar(self)
     love.graphics.draw(self.spritesheet, self.quads[self.quadNum], self.collider:getX() - (self.w) ,self.collider:getY() - (self.h),0,2)
+    self.drawDetectionCircle(self)
+    love.graphics.print(tostring(self.inRangeOfPlayer), self.x, self.y)
+
 end 
 
 function Enemy.update(self,dt)
@@ -43,6 +48,9 @@ function Enemy.update(self,dt)
     self.updateCollider(self,dt)
     self.updateHealthBarSpecs(self,dt)
     self.updateHealth(self,dt)
+    self.updateHitBox(self)
+    self.updateDetectCircle(self,dt)
+    self.checkDetectionCircle(self)
     
     if self.time > 0.2 and self.quadNum < 30  then 
         self.quadNum = self.quadNum + 1
@@ -151,7 +159,15 @@ end
 
 function Enemy.updateHitBox(self,dt)
     if self.direction == "right" then 
-        self.hitbox.x = self.x
+        self.hitbox.x = self.x + self.w 
+        self.hitbox.y = self.collider:getY() - self.h
+        self.hitbox.w = self.w * (2/3)
+        self.hitbox.h = self.h * self.scale
+    elseif self.direction == "left" then 
+        self.hitbox.x = self.x - self.w - self.hitbox.w
+        self.hitbox.y = self.collider:getY() - self.h
+        self.hitbox.w = self.w * (2/3)
+        self.hitbox.h = self.h * self.scale
     end 
 end 
 
@@ -211,4 +227,33 @@ end
 function Enemy.movement(self,dt)
     self.x = self.collider:getX()
     self.y = self.collider:getY()
+end 
+
+--=======DETECTION CIRLCE===========
+function Enemy.initDetectionCirlce(self)
+    self.detectCircle = {}
+    self.detectCircle.x = self.collider:getX()
+    self.detectCircle.y = self.collider:getY()
+    self.detectCircle.radius = self.w * 6
+    self.detectCircle.distanceToPlayer = nil
+    self.inRangeOfPlayer = false
+end 
+
+function Enemy.drawDetectionCircle(self)
+    love.graphics.circle("line", self.detectCircle.x, self.detectCircle.y, self.detectCircle.radius)
+end 
+
+function Enemy.updateDetectCircle(self,dt)
+    self.detectCircle.x = self.collider:getX()
+    self.detectCircle.y = self.collider:getY()
+end 
+
+function Enemy.checkDetectionCircle(self)
+    self.detectCircle.distanceToPlayer = math.sqrt((self.world.player.x - self.detectCircle.x)^2 + (self.world.player.y - self.detectCircle.y)^2)
+    if self.detectCircle.distanceToPlayer <= self.detectCircle.radius then 
+        self.inRangeOfPlayer = true
+        
+    else
+        self.inRangeOfPlayer = false
+    end 
 end 
