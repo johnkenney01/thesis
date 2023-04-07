@@ -19,6 +19,7 @@ function Level.new(self, contents, world)
     self.cam = camera(0,0)
     -- Enemies
     self.enemies = {}
+    
     -- Game Map
     -- Sorts and stores objects passed in to correct table
     for object, innerTable in ipairs(self.contents) do
@@ -34,7 +35,7 @@ function Level.new(self, contents, world)
         end 
         self.addedEmemies = false
     end 
-     
+    self.linkContents(self)
 end 
 
 function Level.draw(self)    
@@ -49,7 +50,7 @@ function Level.draw(self)
         end
         self.player.draw(self.player)
         -- DELETE THIS WHEN WANTING TO REMOVE COLLIDERS
-        -- self.world:draw()
+        self.world:draw()
     self.cam:detach()
     -- HUD THINGS etc.
     self.player.drawHUDThings(self.player)
@@ -78,4 +79,10 @@ end
 
 function Level.getWorld(self)
     return self.world
+end 
+
+
+function Level.linkContents(self)
+    self.world.player = self.player
+    self.world.enemies = self.enemies 
 end 
