@@ -1,6 +1,6 @@
 require('miscellaneous/helpers')
-wf = require("externalLibraries/windfield")
-Object = require('classes/classic')
+wf = require("Love2OOD/externalLibraries/windfield")
+Object = require('Love2OOD/classic')
 local tutorial = {}
 tutorial.font = love.graphics.newFont( 18)
 
@@ -14,7 +14,7 @@ function tutorial.load()
 
     player1 = Player(400,300, tutorial.world)
     for i = 1, 10 do 
-        table.insert(enemy, Enemy(i *250, 100, "assets/spritesheets/wizardEnemy.png",tutorial.world))
+        table.insert(enemy, Enemy(i *250, 100, "assets/spritesheets/wizardEnemy.png",tutorial.world, 2))
     end 
     tutorialMap = gameMap('assets/gameMaps/TestMap128.lua', tutorial.world)
     
@@ -26,8 +26,7 @@ end
 
 function tutorial.draw() 
     tutorialLevel.draw(tutorialLevel)
-    print("tut: "..tutorial.world.name)
-    print("Playa: "..player1.world.name)
+    love.graphics.print(enemy[1].x.."\n"..enemy[1].collider:getX(),100,100)
 end 
 
 

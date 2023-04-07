@@ -1,5 +1,5 @@
 require('miscellaneous/helpers')
-Object = require('classes/classic')
+Object = require('Love2OOD/classic')
 local intro = {}
 
 header1 = "Forge On"
