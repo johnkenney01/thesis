@@ -7,30 +7,30 @@
 
 function getAllRequirements()
     require('graphics/graphics')
-    require('classes/levels')
+    require('Love2OOD/levels')
     require('intro/intro')
     require('intro/optionsScreen/options')
     require('levels/tutorial')
     require('intro/optionsScreen/controls')
     require('intro/optionsScreen/about')
     require('miscellaneous/helpers')
-    require('classes/classic')
-    require('classes/button')
-    require('classes/headers')
-    require('classes/player')
-    require("externalLibraries/camera")
-    require("classes/nonLevelState")
-    require("externalLibraries/sti")
-    require("externalLibraries/windfield")
-    require("classes/gameMap")
-    require("classes/enemy")
+    require('Love2OOD/classic')
+    require('Love2OOD/button')
+    require('Love2OOD/headers')
+    require('Love2OOD/player')
+    require("Love2OOD/externalLibraries/camera")
+    require("Love2OOD/nonLevelState")
+    require("Love2OOD/externalLibraries/sti")
+    require("Love2OOD/externalLibraries/windfield")
+    require("Love2OOD/gameMap")
+    require("Love2OOD/enemy")
     
     
 end 
 
 
 function getObjectClass()
-    Object = require('classes/classic')
+    Object = require('Love2OOD/classic')
 end 
 
 function getAllGameStates()

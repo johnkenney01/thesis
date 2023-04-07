@@ -8,6 +8,7 @@ getAllRequirements()
 love._openConsole()
 gameIsPaused = true
 gameState = 1
+
 --------------------
 -- This table allGameStates, will hold all the tables which are essentially all the levels of the game
 allGameStates = getAllGameStates()
