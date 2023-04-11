@@ -7,6 +7,7 @@ gameMap = Object:extend()
 function gameMap.new(self, pathToMap, world)
     self.pathToMap = pathToMap
     self.map = sti(self.pathToMap)
+    self.mapWidth, self.mapHeight = self.map.width * self.map.tilewidth, self.map.height * self.map.tileheight
     self.world = world
     self.walls = {}
     
@@ -17,6 +18,8 @@ function gameMap.new(self, pathToMap, world)
             table.insert(self.walls, wall)
         end 
     end 
+    
+    self.initBorders(self)
     
 end 
 
@@ -37,5 +40,26 @@ end
 --==============================
 --HELPER FUNCTIONS FOR GAME MAP=
 --==============================
+function gameMap.initBorders(self)
+    -- This function creates borders specific to the map's dimensions
+    self.world:addCollisionClass("Border")
+    self.border = {}
+    self.border.w = 1
 
+    self.border.top = self.world:newRectangleCollider(0,0,self.mapWidth, self.border.w)
+    self.border.top:setType('static')
+    self.border.top:setCollisionClass("Border")
+
+    self.border.bottom = self.world:newRectangleCollider(0, self.mapHeight - self.border.w, self.mapWidth, self.border.w)
+    self.border.bottom:setType("static")
+    self.border.bottom:setCollisionClass("Border")
+
+    self.border.left = self.world:newRectangleCollider(0, 0, self.border.w, self.mapHeight)
+    self.border.left:setType("static")
+    self.border.left:setCollisionClass("Border")
+
+    self.border.right = self.world:newRectangleCollider(self.mapWidth - self.border.w, 0,   self.border.w, self.mapHeight)
+    self.border.right:setType("static")
+    self.border.right:setCollisionClass("Border")
+end 
 
