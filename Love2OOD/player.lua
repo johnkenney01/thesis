@@ -16,6 +16,8 @@ function Player.new(self,x,y,world)
     self.y = self.yTop - (self.h/2)
     self.direction = "right"
     self.state = "idle"
+    self.movingVertical = false
+    self.movingHorizontal = false
     self.speed = 200
     self.vx = 0
     self.vy = 0
@@ -161,47 +163,56 @@ end
 
 -- Updates Player Movement Vars, called in update
 function Player.movement(self,dt)
-    -- self.collider:destroy()
-    -- self.getWorldSpecificCollider(self )
+
+
+    --========VERTICAL MOVEMENT=========
     --Up 
     if love.keyboard.isDown('w') then 
+        self.movingVertical = true
         self.state = "running"
-        self.vy = self.speed  * -1
-        self.vx = 0
-        self.hitbox.y = self.hitbox.y - 15
-    --Left
-    elseif love.keyboard.isDown('a') then
-        self.state = "running" 
-        self.direction = "left"
-        self.vx = self.speed * -1
-        self.vy = 0
-        self.hitbox.x = self.hitbox.x - 15
+        self.vy = -1
+        
     --Down
     elseif love.keyboard.isDown('s') then 
+        self.movingVertical = true
         self.state = "running"
-        self.vy = self.speed
-        self.vx = 0
-        self.hitbox.y = self.hitbox.y + 15
+        self.vy = 1
+    else
+        self.movingVertical = false
+        self.vy = 0
+    end
+    
+    --=======HORIZONTAL MOVEMENT========
+    --Left
+    if love.keyboard.isDown('a') then
+        self.movingHorizontal = true
+        self.state = "running" 
+        self.direction = "left"
+        self.vx = -1
+
     --Right
     elseif love.keyboard.isDown('d') then 
+        self.movingHorizontal = true
         self.direction = "right"
         self.state = "running"
-        self.vx = self.speed
-        self.vy =0
-        self.hitbox.x = self.hitbox.x + 15
-    elseif love.keyboard.isDown("space") and self.attackTimer < 1 then 
-        self.state = "attack"
-        self.vx = 0
-        self.vy = 0
+        self.vx = 1
     else 
-        self.state = 'idle'
+        self.movingHorizontal = false
         self.vx = 0
-        self.vy = 0
     end 
 
+    if self.movingHorizontal == false and self.movingVertical == false then 
+        self.vx = 0
+        self.vy = 0
+        self.state = 'idle'
+    end 
+    
+
+    --=======ATTACKING==========
     if love.keyboard.isDown('space') then 
         self.state = "attack" 
         self.isAttacking = true
+        self.vx, self.vy = 0,0
         self.attackTimer = self.attackTimer + dt
         if self.attackTimer > .5 then 
             self.isAttacking = false
@@ -211,13 +222,16 @@ function Player.movement(self,dt)
         self.attackTimer = 0
         self.isAttacking = false
         self.currentAttack1Frame = 1
-
+    end
+    -- This ensures when the player is moving diagonal the player does not go faster
+    self.magnitude = math.sqrt(self.vx^2 + self.vy^2)
+    if self.magnitude > 0 then 
+        self.vx = self.vx / self.magnitude 
+        self.vy = self.vy / self.magnitude 
     end 
     self.x = self.collider:getX()
     self.y = self.collider:getY()
-    self.collider:setLinearVelocity(self.vx, self.vy)
-    -- self.x = self.collider:getX()
-    -- self.y = self.collider:getY()
+    self.collider:setLinearVelocity(self.vx* self.speed, self.vy * self.speed)
 end 
 
 -- Love.keyreleased callback
