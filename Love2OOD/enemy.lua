@@ -15,7 +15,7 @@ function Enemy.new(self,x,y,spritesheet,world, scale)
     self.getQuads(self)
     self.direction = "left"
     self.state = "idle"
-    self.speed = 175 
+    self.speed = 150
     self.vx = 0
     self.vy = 0 
     self.scale = scale
@@ -39,7 +39,7 @@ function Enemy.draw(self)
     self.DrawHealthBar(self)
     love.graphics.draw(self.spritesheet, self.quads[self.quadNum], self.collider:getX() - (self.w) ,self.collider:getY() - (self.h),0,2)
     self.drawDetectionCircle(self)
-    love.graphics.print(tostring(self.inRangeOfPlayer), self.x, self.y)
+    love.graphics.print(tostring(self.playerInCircle), self.x, self.y)
 
 end 
 
@@ -51,6 +51,7 @@ function Enemy.update(self,dt)
     self.updateHitBox(self)
     self.updateDetectCircle(self,dt)
     self.checkDetectionCircle(self)
+    self.movement(self,dt)
     
     if self.time > 0.2 and self.quadNum < 30  then 
         self.quadNum = self.quadNum + 1
@@ -225,6 +226,39 @@ end
 
 --============MOVEMENT==============
 function Enemy.movement(self,dt)
+    self.detectCircle.distanceToPlayerX = self.world.player.x - self.collider:getX()
+    self.detectCircle.distanceToPlayerY = self.world.player.y - self.collider:getY()
+    if self.playerInCircle then 
+        if self.detectCircle.distanceToPlayerX < 0 then 
+            self.vx =  -1
+            self.direction = "left"
+        elseif self.detectCircle.distanceToPlayerX > 1 then 
+            self.vx = 1
+            self.direction = "right"
+        else 
+            self.vx = 0
+        end 
+
+        if self.detectCircle.distanceToPlayerY < 0 then 
+            
+            self.vy = -1
+        elseif self.detectCircle.distanceToPlayerY > 1 then
+             
+            self.vy = 1
+        else
+            self.vy = 0
+        end 
+    else
+        self.vx = 0
+        self.vy = 0
+    end 
+    -- This ensures when the enemy is moving diagonal the enemy does not go faster than the desired speed
+    self.magnitude = math.sqrt(self.vx^2 + self.vy^2)
+    if self.magnitude > 0 then 
+        self.vx = self.vx / self.magnitude 
+        self.vy = self.vy / self.magnitude 
+    end
+    self.collider:setLinearVelocity(self.vx * self.speed , self.vy * self.speed)
     self.x = self.collider:getX()
     self.y = self.collider:getY()
 end 
@@ -236,6 +270,9 @@ function Enemy.initDetectionCirlce(self)
     self.detectCircle.y = self.collider:getY()
     self.detectCircle.radius = self.w * 6
     self.detectCircle.distanceToPlayer = nil
+    self.playerInCircle = false
+    self.detectCircle.distanceToPlayerX = 0
+    self.detectCircle.distanceToPlayerY = 0
     self.inRangeOfPlayer = false
 end 
 
@@ -251,9 +288,10 @@ end
 function Enemy.checkDetectionCircle(self)
     self.detectCircle.distanceToPlayer = math.sqrt((self.world.player.x - self.detectCircle.x)^2 + (self.world.player.y - self.detectCircle.y)^2)
     if self.detectCircle.distanceToPlayer <= self.detectCircle.radius then 
-        self.inRangeOfPlayer = true
+        self.playerInCircle = true
         
     else
-        self.inRangeOfPlayer = false
+        self.playerInCircle = false
     end 
 end 
+
