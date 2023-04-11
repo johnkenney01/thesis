@@ -8,7 +8,6 @@ Level = Object:extend()
 function Level.new(self, contents, world)
     -- new world for phyics, params 0,0 for 0 gravity 
     self.world = world
-    
     -- Large Data Dump of all contents
     self.contents = contents
     -- Eventually will be all non player objects excluding enemies
@@ -35,6 +34,9 @@ function Level.new(self, contents, world)
         end 
         self.addedEmemies = false
     end 
+
+
+
     self.linkContents(self)
 end 
 
