@@ -3,6 +3,7 @@ Object = require('Love2OOD/classic')
 camera = require("Love2OOD/externalLibraries/camera")
 sti = require("Love2OOD/externalLibraries/sti")
 wf = require("Love2OOD/externalLibraries/windfield")
+require("Love2OOD/physics")
 Level = Object:extend()
 
 function Level.new(self, contents, world)
@@ -16,6 +17,7 @@ function Level.new(self, contents, world)
     self.player = nil
     -- Camera for each level
     self.cam = camera(0,0)
+    self.zoom = WINDOW_WIDTH/1920
     -- Enemies
     self.enemies = {}
     
@@ -30,11 +32,15 @@ function Level.new(self, contents, world)
         if self.contents[object].__type == "player" then 
             self.player = self.contents[object]
         elseif self.addedEmemies == false then
+            if self.contents[object].__type == "game map" then 
+                self.gameMap = self.contents[object]
+            end 
             table.insert(self.nonPlayerContents, self.contents[object])
         end 
         self.addedEmemies = false
     end 
 
+    
 
 
     self.linkContents(self)
@@ -42,6 +48,7 @@ end
 
 function Level.draw(self)    
     self.cam:zoomTo(WINDOW_WIDTH/1920)
+    self.zoom = WINDOW_WIDTH/1920
     -- Everything will be seen through the camera's POV that is within cam:attach() and cam:Detach()
     self.cam:attach()
         for object, innerTable in ipairs(self.nonPlayerContents) do 
@@ -56,12 +63,10 @@ function Level.draw(self)
     self.cam:detach()
     -- HUD THINGS etc.
     self.player.drawHUDThings(self.player)
-    
 
 end 
 
 function Level.update(self, dt)
-    self.cam:lookAt(self.player.x, self.player.y)
     self.player.update(self.player,dt)
     for i = 1, #self.nonPlayerContents do
         self.nonPlayerContents[i].update(self.nonPlayerContents[i], dt)
@@ -69,6 +74,8 @@ function Level.update(self, dt)
     for i, innerTable in ipairs(self.enemies) do 
         self.enemies[i].update(self.enemies[i], dt)
     end 
+    self.cam:lookAt(self.player.x, self.player.y)
+    self.updateCamera(self)
 end 
 
 --===============================================
@@ -87,4 +94,20 @@ end
 function Level.linkContents(self)
     self.world.player = self.player
     self.world.enemies = self.enemies 
+end 
+
+function Level.updateCamera(self)
+    -- Keeps the camera in bounds of the game map, not showing any off map black voidness 
+    if self.cam.x < (WINDOW_WIDTH/2)/self.zoom then 
+        self.cam.x = (WINDOW_WIDTH/2)/self.zoom
+    end
+    if self.cam.y < (WINDOW_HEIGHT/2)/self.zoom then 
+        self.cam.y = (WINDOW_HEIGHT/2)/self.zoom
+    end 
+    if self.cam.x > (self.gameMap.mapWidth - (WINDOW_WIDTH/2)/self.zoom) then 
+        self.cam.x = (self.gameMap.mapWidth - (WINDOW_WIDTH/2)/self.zoom)
+    end 
+    if self.cam.y > (self.gameMap.mapHeight - (WINDOW_HEIGHT/2)/self.zoom) then 
+        self.cam.y = (self.gameMap.mapHeight - (WINDOW_HEIGHT/2)/self.zoom)
+    end 
 end 

@@ -1,5 +1,7 @@
 require('miscellaneous/helpers')
 Object = require('Love2OOD/classic')
+-- require("Love2OOD/physics")
+wf = require("Love2OOD/externalLibraries/windfield")
 
 Player = Object:extend()
 
@@ -7,6 +9,7 @@ function Player.new(self,x,y,world)
     -- LUA x and Y by default are top left
     self.__type = "player"
     self.world = world
+    
     self.spritesheet = love.graphics.newImage("assets/spritesheets/playerSpriteSheet.png")
     self.xTop = x 
     self.yTop = y
@@ -18,9 +21,10 @@ function Player.new(self,x,y,world)
     self.state = "idle"
     self.movingVertical = false
     self.movingHorizontal = false
-    self.speed = 200
+    self.speed = 5
     self.vx = 0
     self.vy = 0
+    self.attackTimer = 0
     
     -- Init Health & Healthbar variables
     self.initHealth(self)
@@ -41,18 +45,16 @@ function Player.new(self,x,y,world)
     self.getWorldSpecificCollider(self)
 
     self.attackType = 1
+    self.colliding = false
+    return self
 end 
 
 -- This should only include the actual players stuff not including HUD or Health bar
 function Player.draw(self)
-    setColor(1,0,0,1)
-    -- love.graphics.rectangle("line",self.x,self.y,self.w,self.h)
-    setColor(1,1,1,1)
-    love.graphics.rectangle('line', self.hitbox.x, self.hitbox.y, self.hitbox.w, self.hitbox.h)
-    -- love.graphics.draw(self.spritesheet, self.idleQuad[self.currentFrame], self.x, self.y+7,0, self.scaleX, self.scaleY, 1)
-    self.drawSpecificQuad(self)
-    
-       
+    self.drawSpecificQuad(self)  
+    love.graphics.rectangle('line',self.x,self.y,self.w,self.h)   
+    self.drawHitbox(self)  
+    love.graphics.print(tostring(self.colliding), self.x, self.y - 75)
 end 
 
 
@@ -65,6 +67,7 @@ function Player.update(self, dt)
     self.updateHealthBarSpecs(self,dt)
     self.updateHealth(self,dt)
     self.isDead(self,dt)
+    self.detectBorders(self,dt)
 end 
 
 
@@ -157,16 +160,21 @@ function Player.generateHitBox(self)
     self.hitbox.y = self.y
     self.hitbox.w = self.w * (2/3)
     self.hitbox.h = self.h
+    self.hitbox.startH = self.h
+    
 
     return self.hitbox
+end 
+
+function Player.drawHitbox(self)
+    love.graphics.rectangle("line", self.hitbox.x, self.hitbox.y,self.hitbox.w,self.hitbox.h)
 end 
 
 -- Updates Player Movement Vars, called in update
 function Player.movement(self,dt)
 
-
-    --========VERTICAL MOVEMENT=========
-    --Up 
+        --========VERTICAL MOVEMENT=========
+        --Up 
     if love.keyboard.isDown('w') then 
         self.movingVertical = true
         self.state = "running"
@@ -229,14 +237,19 @@ function Player.movement(self,dt)
         self.vx = self.vx / self.magnitude 
         self.vy = self.vy / self.magnitude 
     end 
-    self.x = self.collider:getX()
-    self.y = self.collider:getY()
-    self.collider:setLinearVelocity(self.vx* self.speed, self.vy * self.speed)
+    if self.colliding == false then 
+        self.x = self.x + (self.vx * self.speed)
+        self.y = self.y + (self.vy * self.speed)
+    else
+        self.x = self.x 
+        self.y = self.y
+    end 
+    
+    
 end 
 
 -- Love.keyreleased callback
 function Player.switchAttack(self,key)
-    print("P")
     if gameIsPaused == false then 
         if key == "1" then
             self.attackType = 1 --Standard Attack
@@ -251,13 +264,16 @@ end
 
 -- Updates the position variables for the hitbox
 function Player.updateHitBox(self, dt)
+    self.hitbox.x = self.x + self.w 
+    self.hitbox.y = self.y
+    self.hitbox.w = self.w * (2/3)
+    self.hitbox.h = self.h
     if self.direction == "right" then 
-        self.hitbox.x = self.collider:getX() + self.w/2 
-        self.hitbox.y = self.collider:getY() - self.h/2
+        self.hitbox.x = self.x + self.w 
     elseif self.direction == "left" then 
-        self.hitbox.x = (self.collider:getX() - (self.w/2) - self.hitbox.w)
-        self.hitbox.y = self.collider:getY() - self.h/2 
-    end 
+        self.hitbox.x = self.x - self.hitbox.w 
+    end
+    self.hitbox.y = self.y 
 end 
 
 -- Loads all the different Player quads
@@ -325,53 +341,64 @@ end
 
 -- Depending on the state of player determines which quad is rendered to screen
 function Player.drawSpecificQuad(self)
+    
     if self.state == 'idle' then 
         if self.direction == 'right' then 
-            love.graphics.draw(self.spritesheet, self.idleQuad[self.currentIdleFrame], self.collider:getX()-(self.w/2), self.collider:getY()-(self.h/2),0, self.scaleX, self.scaleY, 1)
+            love.graphics.draw(self.spritesheet, self.idleQuad[self.currentIdleFrame], self.x, self.y,0, self.scaleX, self.scaleY,0)
+            
         elseif self.direction == 'left' then 
-            love.graphics.draw(self.spritesheet, self.idleQuad[self.currentIdleFrame], self.collider:getX()+(self.w/2), self.collider:getY()-(self.h/2),0, -self.scaleX, self.scaleY, 1)
+            love.graphics.draw(self.spritesheet, self.idleQuad[self.currentIdleFrame], self.x, self.y,0, -self.scaleX, self.scaleY, self.w/2)
         end 
     elseif self.state == 'running' then 
         if self.direction == 'right' then 
-            love.graphics.draw(self.spritesheet, self.runningQuad[self.currentRunningFrame], self.collider:getX() - (self.w/2), self.collider:getY()-(self.h/2),0, self.scaleX, self.scaleY, 1)
+            love.graphics.draw(self.spritesheet, self.runningQuad[self.currentRunningFrame], self.x, self.y,0, self.scaleX, self.scaleY, 0)
         elseif self.direction == 'left' then 
-            love.graphics.draw(self.spritesheet, self.runningQuad[self.currentRunningFrame], self.collider:getX()+(self.w/2), self.collider:getY()-(self.h/2),0, -self.scaleX, self.scaleY, 1)
+            love.graphics.draw(self.spritesheet, self.runningQuad[self.currentRunningFrame], self.x, self.y,0, -self.scaleX, self.scaleY, self.w/2)
         end 
     elseif self.state == "attack" then 
         if self.direction == "right" then 
-            love.graphics.draw(self.spritesheet, self.attackQuad1[self.currentAttack1Frame],self.collider:getX() - (self.w/2), self.collider:getY()-(self.h/2) , 0, self.scaleX, self.scaleY, 1)
+            love.graphics.draw(self.spritesheet, self.attackQuad1[self.currentAttack1Frame],self.x, self.y , 0, self.scaleX, self.scaleY, 0,5)
+            
         elseif self.direction =='left' then 
-            love.graphics.draw(self.spritesheet, self.attackQuad1[self.currentAttack1Frame], self.collider:getX() + (self.w/2), self.collider:getY()-(self.h/2), 0, -self.scaleX, self.scaleY, 1)
+            love.graphics.draw(self.spritesheet, self.attackQuad1[self.currentAttack1Frame], self.x, self.y, 0, -self.scaleX, self.scaleY, self.w/2, 5)
         end 
     end 
 end 
 
 
+
+
 function Player.getWorldSpecificCollider(self)
-    self.colliderWidthStart = 0 
-    self.collider = self.world:newBSGRectangleCollider(self.x, self.y, self.w, self.h, 0)
-    self.collider:setFixedRotation(true)
-    self.colliderWidthStart = self.w
-    
+
+    -- NEW COLLIDER WITHOUT PHYSICS
+    self.body = {}
+    self.body.x = self.x
+    self.body.y = self.y 
+    self.body.w = self.w 
+    self.body.h = self.h 
+    self.body.startW = self.w
+     
 end 
 
-function Player.updateCollider(self,dt)
-    if self.colliderWidthStart == self.w then 
-        self.tmp = 0
-    elseif self.colliderWidthStart ~= self.w then 
-        self.collider:destroy()
-        self.collider = self.world:newBSGRectangleCollider(self.x, self.y, self.w, self.h, 0)
-        self.collider:setFixedRotation(true)
-        self.colliderWidthStart = self.w
 
-    end 
+
+
+function Player.updateCollider(self,dt)
+    -- NEW COLLIDER WITHOUT PHYSICS
+    self.body.x = self.x
+    self.body.y = self.y 
+    self.body.w = self.w 
+    self.body.h = self.h 
+    
 end 
 
 
 function Player.isDead(self, dt)
     -- Chekcing to see if the player's health is 0
-    if self.health == 0 then 
+    if self.health.currentHealth == 0 then 
         self.isAlive = False
+        gameState = 1
+        love.load()
     end 
 
 end
@@ -407,5 +434,18 @@ end
 function Player.longRangeAttack(self)
     if self.attackType == 2 then 
         
+    end 
+end 
+
+
+
+function Player.detectBorders(self,dt)
+    
+end 
+
+function Player.isAttacked(self)
+    self.health.currentHealth = self.health.currentHealth - 10 
+    if self.health.currentHealth <= 0 then 
+        self.health.currentHealth = 0
     end 
 end 

@@ -9,16 +9,25 @@ function gameMap.new(self, pathToMap, world)
     self.map = sti(self.pathToMap)
     self.mapWidth, self.mapHeight = self.map.width * self.map.tilewidth, self.map.height * self.map.tileheight
     self.world = world
+    self.world.map = self.map
+    
     self.walls = {}
+    self.__type = "game map"
     
     if self.map.layers["Object"] then 
         for i, obj in pairs(self.map.layers["Object"].objects) do
-            self.wall = self.world:newRectangleCollider(obj.x, obj.y, obj.width, obj.height)
-            self.wall:setType('static')
-            table.insert(self.walls, wall)
+
+            --NEW WALLS 
+            self.wall = {}
+            self.wall.name = "WALLS"
+            self.wall.x = obj.x 
+            self.wall.y = obj.y 
+            self.wall.w = obj.width
+            self.wall.h = obj.height
+            table.insert(self.walls, self.wall)
         end 
     end 
-    
+    self.world.walls = self.walls
     self.initBorders(self)
     
 end 
@@ -28,6 +37,14 @@ function gameMap.draw(self)
         if  self.map.layers[layer].name ~= "Object" then 
             self.map:drawLayer(self.map.layers[layer])   
         end 
+    end 
+    for i = 1, #self.walls do 
+        love.graphics.rectangle("line", self.walls[i].x, self.walls[i].y, self.walls[i].w,self.walls[i].h)
+    end
+    
+    for i = 1, #self.border do
+        
+        love.graphics.rectangle('line', self.border[i].x,self.border[i].y,self.border[i].w,self.border[i].h)
     end 
 end 
 
@@ -42,24 +59,44 @@ end
 --==============================
 function gameMap.initBorders(self)
     -- This function creates borders specific to the map's dimensions
-    self.world:addCollisionClass("Border")
+    
     self.border = {}
-    self.border.w = 1
+    self.w = 10
 
-    self.border.top = self.world:newRectangleCollider(0,0,self.mapWidth, self.border.w)
-    self.border.top:setType('static')
-    self.border.top:setCollisionClass("Border")
 
-    self.border.bottom = self.world:newRectangleCollider(0, self.mapHeight - self.border.w, self.mapWidth, self.border.w)
-    self.border.bottom:setType("static")
-    self.border.bottom:setCollisionClass("Border")
+    self.top = {}
+    self.top.x, self.top.y = 0, 0
+    self.top.w, self.top.h = self.mapWidth, self.w
+    table.insert(self.border, self.top)
+    
 
-    self.border.left = self.world:newRectangleCollider(0, 0, self.border.w, self.mapHeight)
-    self.border.left:setType("static")
-    self.border.left:setCollisionClass("Border")
+    -- self.bottom = self.world:newRectangleCollider(0, self.mapHeight - self.w, self.mapWidth, self.w)
+    -- self.bottom:setType("static")
+    -- self.bottom:setCollisionClass(")
 
-    self.border.right = self.world:newRectangleCollider(self.mapWidth - self.border.w, 0,   self.border.w, self.mapHeight)
-    self.border.right:setType("static")
-    self.border.right:setCollisionClass("Border")
+    self.bottom = {}
+    self.bottom.x, self.bottom.y = 0, self.mapHeight - 10
+    self.bottom.w, self.bottom.h = self.mapWidth, self.w
+    table.insert(self.border, self.bottom)
+
+
+    -- self.left = self.world:newRectangleCollider(0, 0, self.w, self.mapHeight)
+    -- self.left:setType("static")
+    -- self.left:setCollisionClass(")
+
+    self.left = {}
+    self.left.x, self.left.y = 0, 0
+    self.left.w, self.left.h =  self.w,self.mapWidth
+    table.insert(self.border, self.left)
+    -- self.right = self.world:newRectangleCollider(self.mapWidth - self.w, 0,   self.w, self.mapHeight)
+    -- self.right:setType("static")
+    -- self.right:setCollisionClass(")
+    -- print(self.right.collision_class)
+
+    self.right = {}
+    self.right.x, self.right.y = self.mapWidth-10,0
+    self.right.w, self.right.h = self.w, self.mapHeight
+    table.insert(self.border, self.right)
+    print('YURT: '..self.right.x.." "..self.right.w.." "..self.right.h)
 end 
 

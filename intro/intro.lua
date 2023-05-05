@@ -2,16 +2,16 @@ require('miscellaneous/helpers')
 Object = require('Love2OOD/classic')
 local intro = {}
 
-header1 = "Forge On"
+header1 = "Love 2OOD"
 titleColor = {1,1,0.3,1}
 
 function intro.load()
     intro.contents = {}
     titleHeader = Header(header1,WINDOW_WIDTH/50, WINDOW_HEIGHT/3,1,1, WINDOW_WIDTH*.20,titleColor, false, intro.contents )
     -- BUTTONS --
-    startButton = Button('Start Game', "start", 2, 2, 0.025, startButton_functionToCall, intro.contents)
-    loadButton = Button('Load Game', 'load', 2, 1.75,  0.025, nil,  intro.contents )
-    optionsButton = Button('Options', "options", 2, 1.53125, 0.025, optionsButton_functionToCall, intro.contents)
+    startButton = Button('Test Engine', "start", 2, 2, 0.025, startButton_functionToCall, intro.contents)
+    loadButton = Button('Test Button 1', 'load', 2, 1.75,  0.025, nil,  intro.contents )
+    optionsButton = Button('Test Button 2', "options", 2, 1.53125, 0.025, optionsButton_functionToCall, intro.contents)
     quitButton = Button('Quit', "quit", 2, 1.33984375,  0.025, quitButton_functionToCall, intro.contents)
     --------------
     introLevel = nonLevelState(intro.contents)
