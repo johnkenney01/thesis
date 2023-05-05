@@ -1,7 +1,7 @@
 # README
 ## Thesis II: John Kenney
 ### Description:
-  For my thesis I am developing my own game engine and using that game engine developing my own video game.
+  For my thesis I am developing my own game engine to allow game devs using love2D to have an easier and much more efficient option when developing.
 
 ## Overview
 The purpose of this thesis is to gain as much exposure to the game dev realm as I can. When I had decided on doing a game I then had to narrow my decision as to how I would go about doing this. I also have a great passion for designing data manipulation, designing large programs etc. The options as to what I could use to build this game were many however, I chose to use the Love 2D game engine. Love 2D is an open source 2D game engine that uses LUA - programming language to provide basic functionality at its most basic implementation. 
@@ -13,25 +13,28 @@ Love 2D as mentioned is a basic game engine that is open source and allows the u
 ### Love 2OOD - Love 2D with Objected Oriented Programming
 My game engine will be called Love 2OOD - pronounced Love "Tude-e", this is more of an extension of the already existing love 2d framework, but reformatting and redesigning the implementation and structure as well as abstracting a lot away. Once complete I will then implement my own engine to create a somewhat large scale game.
 
-### Forge On...
-The name of my game is forge on, in a far away land...Echo Rift, the evil Dr. Killian Yenyth reins supreme leading the Yenyth Empire comprised of Gharthas and other monsters. Our hero Helion washes up on the shores of Echo Rift, greated by a mysterious yet friendly creature Rick ! From here Rick goes on to explain that Dr. Yenyth has had his rule over Echo Rift for far too long and reqeusts the help of Helion to liberate Echo Rift. Will you help...?
-
 
 ### Features - Love 2OOD:
 - Player class
+  - Movement 
+  - Physics Integration 
+  - Spritesheet Integration 
+  - Attack integration
+  - hitbox
+  - Dynamic Graphics
 - Buttons class
+  - Dynamic resizing
+  - Dynamic Function integration
 - Enemies Class
+  - Physics Integration 
+  - Spritesheet Integration 
+  - Attack integration
+  - hitbox
+  - Dynamic Graphics
+  - Movement 
 - Levels Class - Container for all other classes
-- NPC Class 
+  - Takes all game objects passed into a specific level and interlinks the objects which allows for interactions and passing of data between objects in a specific level
 - Game Map class
+  - TILED software integration. 
+  - Tiled is a 3rd part software that is used in development for 2D tile game maps. My engine included an easy way to seamleessely integrate one's game map into their game by simply passing the file path of the map and the engine will configure the map, give it dynamic resizing as well as implement physics objects into the game.
 
-### Forge On Features:
-- Basic movement system
-- Dynamic attack system
-- Dynamic Graphics
-- AI-ish Enemies
-- Large scale Levels in comparison to traditional games in this engine
-- Immersive story
-- Self created/designed game art
-- Save/Load game feature
-TBD
